@@ -1,15 +1,18 @@
 from flask import Flask, jsonify, request
 from flask_mysqldb import MySQL
+from logger import setup_logger
 import config
-import time
+from datetime import datetime
 #from models import db, StationsModel
 
 app = Flask(__name__)
  
+logger = setup_logger(app)
 app.config.from_object(config)
 
 mysql = MySQL(app)
 
+#временный метод, выводит список всех станций
 @app.route('/')
 def stations():
     cur = mysql.connection.cursor()
@@ -28,75 +31,79 @@ def stations():
     
     return jsonify(stations)
 
+#добавляет данные с метеостанции или пишет ошибку в лог
 @app.route('/add_data', methods=['GET'])
 def add_station():
 
-    #station code 
-    x = request.args.get('x')
+    #x - station code, mac_id 
+    mac_id = request.args.get('x')
 
-    if not (x and x.isalnum()):
+    if not (mac_id and mac_id.isalnum()):
+        app.logger.info(f'Wrong value for station code(param x), request url: {request.url}')
         return jsonify({"error": "Wrong value for station code(param x)"}), 400 
-        #return jsonify({"error": "Wrong value for station code(param x)"})
 
+    #получаем все остальные параметры
+    params = ['a', 'm', 'g', 'd5', 'p', 'tp', 'te2', 'h'];
+    params_vals = {}
 
-    #d5 - direction, from 0 to 1024
-    try: 
-        d5 = request.args.get('d5')
-        d5 = float(d5)
-        d5 = (d5/1024)*360
-    except Exception as e:
-         return jsonify({"error": "Wrong value for direction(param d5)"}), 400
+    for i in params:
+        try:
+            params_vals[i] = parseParams(i)
+        except Exception as e:
+            #если что-то не то пришло, возвращаем ошибку и пишем в лог
+            app.logger.info(f'Wrong value for param: {i}, request url: {request.url}')
+            return jsonify({"error": f"Wrong value for param: {i}"}), 400
 
-    #p - pressure, hPa
-    try: 
-        p = request.args.get('p')
-        p = float(p)
-    except Exception as e:
-         return jsonify({"error": "Wrong value for pressure(param p)"}), 400
+    #пересчитываем ветер в м/c
+    params_vals['a'] = params_vals['a']/10
+    params_vals['m'] = params_vals['m']/10
+    params_vals['g'] = params_vals['g']/10
 
-
-    #tp, te2  - temperature
-    #try 
-    #    p = request.args.get('p')
-    #    p = float(p)
-    #except Exception as e:
-    #     return jsonify({"error": "Wrong value for pressure(param p)"}), 400
+    #пересчитываем направление в градусы, исходное значение от 0 до 1024
+    params_vals['d5'] = (params_vals['d5']/1024)*360
 
     cur = mysql.connection.cursor()
-    cur.execute('SELECT * FROM stations WHERE 1chip_id = %s', (x,))
+    cur.execute('SELECT * FROM stations WHERE 1chip_id = %s', (mac_id,))
     station = cur.fetchone()
     cur.close()
 
-    if station is None:
+    #если такого mac_id нет, просто добавляем в таблицу, чтобы потом разобраться
+    if not station:
         cur = mysql.connection.cursor()
         cur.execute('''
                 INSERT INTO stations (1chip_id, title, latitude, longitude)
                 VALUES (%s, %s, %s, %s)
-            ''', (x, 'test', 2, 3))
+            ''', (mac_id, 'test', 2, 3))
 
         station_id = cur.lastrowid
 
         mysql.connection.commit()
         cur.close()
     else:
-        station_id = station.id
+        if isinstance(station, tuple):
+            station_id = station[0]
+        else:
+            station_id = station.id
 
     cur = mysql.connection.cursor()
     cur.execute('''
-            INSERT INTO station_data (station_id, timestamp, wind_direction, pressure, temperature, average_wind, min_wind, gusts, humidity, precipitation)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-        ''', (station_id, int(time.time()), d5, p, 11, 1, 1, 1, 1, 1))
+            INSERT INTO station_data 
+            (`station_id`, `timestamp`, `average_wind`, `min_wind`, `gusts`, `wind_direction`, `pressure`, `internal_temperature`, `external_temperature`, `humidity`, `precipitation`)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        ''', (station_id, datetime.now(), params_vals['a'], params_vals['m'], params_vals['g'], params_vals['d5'], params_vals['p'], params_vals['tp'], params_vals['te2'], params_vals['h'], 0))
     
     mysql.connection.commit()
     cur.close()
 
-    #data = []
-    #data.append({
-    #        'x': x,
-    #        'd5': 8
-    #        })
-    #return jsonify(data)
     return jsonify({"msg": "Data saved!"})
+
+def parseParams(param):
+    try: 
+        p = request.args.get(param)
+        p = float(p)
+        return p
+    except Exception as e:
+        raise ValueError(e)
 
 
 if __name__ == '__main__':
