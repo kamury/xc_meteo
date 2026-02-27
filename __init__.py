@@ -44,15 +44,19 @@ def add_station():
 
     #получаем все остальные параметры
     params = ['a', 'm', 'g', 'd5', 'p', 'tp', 'te2', 'h'];
+    req_params = ['a', 'm', 'g', 'd5'];
     params_vals = {}
 
     for i in params:
         try:
             params_vals[i] = parseParams(i)
         except Exception as e:
-            #если что-то не то пришло, возвращаем ошибку и пишем в лог
-            app.logger.info(f'Wrong value for param: {i}, request url: {request.url}')
-            return jsonify({"error": f"Wrong value for param: {i}"}), 400
+            if i in req_params:
+                #если нет обязательного параметра, возвращаем ошибку и пишем в лог
+                app.logger.info(f'Wrong value for param: {i}, request url: {request.url}')
+                return jsonify({"error": f"Wrong value for param: {i}"}), 400
+            else:
+                params_vals[i] = None;
 
     #пересчитываем ветер в м/c
     params_vals['a'] = params_vals['a']/10
