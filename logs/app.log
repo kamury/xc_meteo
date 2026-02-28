@@ -1,0 +1,23 @@
+[2026-02-26 18:36:53,239] INFO in __init__: Полный URL: http://127.0.0.1:5000/add_data?x=14&d5=16
+[2026-02-26 18:36:53,241] INFO in __init__: error
+[2026-02-26 18:36:53,241] INFO in __init__: http://127.0.0.1:5000/add_data?x=14&d5=16
+[2026-02-26 18:40:29,737] INFO in __init__: Request url: http://127.0.0.1:5000/add_data?x=14&d5=16
+[2026-02-26 19:10:05,014] INFO in __init__: Request url: http://127.0.0.1:5000/add_data?x=14&d5=16
+[2026-02-26 19:11:51,661] INFO in __init__: Wrong value for average_wind(param a), request url: http://127.0.0.1:5000/add_data?x=14&d5=16
+[2026-02-26 19:12:14,012] INFO in __init__: Wrong value for average_wind(param a), request url: http://127.0.0.1:5000/add_data?x=14&d5=16&a="5"
+[2026-02-26 19:12:32,852] INFO in __init__: Wrong value for average_wind(param a), request url: http://127.0.0.1:5000/add_data?x=14&d5=16&a=g
+[2026-02-26 19:12:45,006] INFO in __init__: Wrong value for average_wind(param a), request url: http://127.0.0.1:5000/add_data?x=14&d5=16&a=5"
+[2026-02-26 19:12:59,256] INFO in __init__: Wrong value for min_wind(param m), request url: http://127.0.0.1:5000/add_data?x=14&d5=16&a=5
+[2026-02-26 19:13:11,954] INFO in __init__: Wrong value for min_wind(param m), request url: http://127.0.0.1:5000/add_data?x=14&d5=16&a=5.1
+[2026-02-26 19:13:17,738] INFO in __init__: Wrong value for average_wind(param a), request url: http://127.0.0.1:5000/add_data?x=14&d5=16&a=5,1
+[2026-02-26 19:13:25,300] INFO in __init__: Wrong value for min_wind(param m), request url: http://127.0.0.1:5000/add_data?x=14&d5=16&a=5.1
+[2026-02-26 20:12:00,527] INFO in __init__: Wrong value for param: m, request url: http://127.0.0.1:5000/add_data?x=14&d5=16&a=5.1
+[2026-02-26 20:12:07,857] INFO in __init__: Wrong value for param: a, request url: http://127.0.0.1:5000/add_data?x=14&d5=16
+[2026-02-26 20:12:07,858] INFO in __init__: Wrong value for param: m, request url: http://127.0.0.1:5000/add_data?x=14&d5=16
+[2026-02-26 20:18:24,421] INFO in __init__: Wrong value for param: a, request url: http://127.0.0.1:5000/add_data?x=14&d5=16
+[2026-02-26 20:18:35,163] INFO in __init__: Wrong value for param: m, request url: http://127.0.0.1:5000/add_data?x=14&d5=16&a=5
+[2026-02-26 20:41:22,593] INFO in __init__: Wrong value for param: g, request url: http://127.0.0.1:5000/add_data?x=14&d5=16&a=5&m=6
+[2026-02-26 20:41:35,505] INFO in __init__: Wrong value for param: tp, request url: http://127.0.0.1:5000/add_data?x=14&d5=16&a=5&m=6&g=8&p=1
+[2026-02-26 20:41:42,731] INFO in __init__: Wrong value for param: te2, request url: http://127.0.0.1:5000/add_data?x=14&d5=16&a=5&m=6&g=8&p=1&tp=10
+[2026-02-26 20:41:51,326] INFO in __init__: Wrong value for param: h, request url: http://127.0.0.1:5000/add_data?x=14&d5=16&a=5&m=6&g=8&p=1&tp=10&te2=12
+[2026-02-27 18:57:54,306] INFO in __init__: Wrong value for param: tp, request url: http://127.0.0.1:5000/add_data?x=15&d5=16&a=5&m=6&g=8&p=1&p=12&h=10

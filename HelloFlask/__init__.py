@@ -1,9 +1,11 @@
 from flask import Flask, jsonify, request
 from flask_mysqldb import MySQL
-from logger import setup_logger
-import config
 from datetime import datetime
 #from models import db, StationsModel
+
+from .logger import setup_logger
+from . import config
+
 
 app = Flask(__name__)
  
@@ -26,7 +28,8 @@ def stations():
         stations.append({
             'id': row[0],
             '1chip_id': row[1],
-            'tetle': row[2]
+            'mac_id': row[2],
+            'title': row[3]
         })
     
     return jsonify(stations)
@@ -67,7 +70,7 @@ def add_station():
     params_vals['d5'] = (params_vals['d5']/1024)*360
 
     cur = mysql.connection.cursor()
-    cur.execute('SELECT * FROM stations WHERE 1chip_id = %s', (mac_id,))
+    cur.execute('SELECT * FROM stations WHERE mac_id = %s', (mac_id,))
     station = cur.fetchone()
     cur.close()
 
@@ -75,9 +78,9 @@ def add_station():
     if not station:
         cur = mysql.connection.cursor()
         cur.execute('''
-                INSERT INTO stations (1chip_id, title, latitude, longitude)
-                VALUES (%s, %s, %s, %s)
-            ''', (mac_id, 'test', 2, 3))
+                INSERT INTO stations (1chip_id,mac_id, title, latitude, longitude)
+                VALUES (%s, %s, %s, %s, %s)
+            ''', ('', mac_id, 'test', 2, 3))
 
         station_id = cur.lastrowid
 
@@ -108,7 +111,3 @@ def parseParams(param):
         return p
     except Exception as e:
         raise ValueError(e)
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
