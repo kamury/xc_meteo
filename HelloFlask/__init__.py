@@ -1,37 +1,30 @@
 from flask import Flask, jsonify, request
-from flask_mysqldb import MySQL
 from datetime import datetime
 #from models import db, StationsModel
 
 from .logger import setup_logger
-from . import config
+from . import config, db, models
 
-
+'''
 app = Flask(__name__)
  
 logger = setup_logger(app)
 app.config.from_object(config)
 
 mysql = MySQL(app)
+'''
+
+
+app = Flask(__name__)
+app.config.from_object(config)
+
+# Инициализируем MySQL с этим приложением
+db.init_app(app)
 
 #временный метод, выводит список всех станций
 @app.route('/')
 def stations():
-    cur = mysql.connection.cursor()
-    cur.execute('SELECT * FROM stations')
-    rows = cur.fetchall()
-    cur.close
-
-    # Преобразуем данные в словарь
-    stations = []
-    for row in rows:
-        stations.append({
-            'id': row[0],
-            '1chip_id': row[1],
-            'mac_id': row[2],
-            'title': row[3]
-        })
-    
+    stations = models.get_all_stations();
     return jsonify(stations)
 
 #добавляет данные с метеостанции или пишет ошибку в лог
@@ -69,38 +62,18 @@ def add_station():
     #пересчитываем направление в градусы, исходное значение от 0 до 1024
     params_vals['d5'] = (params_vals['d5']/1024)*360
 
-    cur = mysql.connection.cursor()
-    cur.execute('SELECT * FROM stations WHERE mac_id = %s', (mac_id,))
-    station = cur.fetchone()
-    cur.close()
+    station = models.get_station_by_mac_id(mac_id)
 
     #если такого mac_id нет, просто добавляем в таблицу, чтобы потом разобраться
     if not station:
-        cur = mysql.connection.cursor()
-        cur.execute('''
-                INSERT INTO stations (1chip_id,mac_id, title, latitude, longitude)
-                VALUES (%s, %s, %s, %s, %s)
-            ''', ('', mac_id, 'test', 2, 3))
-
-        station_id = cur.lastrowid
-
-        mysql.connection.commit()
-        cur.close()
+        station_id = models.add_station(mac_id)
     else:
         if isinstance(station, tuple):
             station_id = station[0]
         else:
             station_id = station.id
 
-    cur = mysql.connection.cursor()
-    cur.execute('''
-            INSERT INTO station_data 
-            (`station_id`, `timestamp`, `average_wind`, `min_wind`, `gusts`, `wind_direction`, `pressure`, `internal_temperature`, `external_temperature`, `humidity`, `precipitation`)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-        ''', (station_id, datetime.now(), params_vals['a'], params_vals['m'], params_vals['g'], params_vals['d5'], params_vals['p'], params_vals['tp'], params_vals['te2'], params_vals['h'], 0))
-    
-    mysql.connection.commit()
-    cur.close()
+    models.add_station_data(station_id, params_vals)
 
     return jsonify({"msg": "Data saved!"})
 
