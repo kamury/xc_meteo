@@ -5,16 +5,6 @@ from datetime import datetime
 from .logger import setup_logger
 from . import config, db, models
 
-'''
-app = Flask(__name__)
- 
-logger = setup_logger(app)
-app.config.from_object(config)
-
-mysql = MySQL(app)
-'''
-
-
 app = Flask(__name__)
 app.config.from_object(config)
 
@@ -22,11 +12,3 @@ app.config.from_object(config)
 db.init_app(app)
 
 from .routes import main, api
-
-'''
-#временный метод, выводит список всех станций
-@app.route('/')
-def stations():
-    stations = models.get_all_stations();
-    return jsonify(stations)
-'''

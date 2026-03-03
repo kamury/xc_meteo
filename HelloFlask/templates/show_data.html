@@ -14,7 +14,7 @@
         {% for str in data %}
             <tr>
                 <td>{{ str.timestamp }}</td>
-                <td><div style="transform:rotate({{ str.wind_direction }}deg);border:0;font-weight:bold" align="center">↓ </div></td>
+                <td><div style="transform:rotate({{ str.wind_direction }}deg);border:0;font-weight:bold" align="center"> ↑ </div></td>
                 <td>{{ str.wind_direction }}</td>
                 <td>min {{ str.min_wind }}</td>
                 <td>avg {{ str.average_wind }}</td> 
