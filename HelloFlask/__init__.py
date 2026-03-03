@@ -21,7 +21,7 @@ app.config.from_object(config)
 # Инициализируем MySQL с этим приложением
 db.init_app(app)
 
-from .routes import main, stations
+from .routes import main, api
 
 '''
 #временный метод, выводит список всех станций
