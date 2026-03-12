@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <br/>
+    <h3 class="m_container">Выберите метеостанцию:</h3>
+    <form id="stationForm">
+    <select name="station_id" id="station" required class="form-select">
+        <option value="" selected>список станций</option>
+        {% for station in stations %}
+            <option value="{{ station.id }}">{{ station.title }}</option>
+        </a><br />
+        {% endfor %}
+    </select>
+    <button onclick="show_data(); return false;" type="button" class="btn btn-dark m_container">Показать</button>
+    </form>
+
+    <div id="error" style="display: none;" class="alert alert-danger m_container" role="alert">
+        Выберите станцию из списка
+    </div>
+
+    <script>
+        function show_data() {
+
+            var stationId = $('#station').val();
+
+            if (!stationId) {
+                $('#error').css('display', 'block');
+            } else {
+                window.location.href = '/show_data/' + stationId;
+            }
+        }
+
+        /*$(document).ready(function() {
+            $('#stationForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                var stationId = $('#station').val();
+                
+                if (!stationId) {
+                    alert('Пожалуйста, выберите станцию');
+                    return;
+                }
+                
+                window.location.href = '/data/' + stationId;
+            });
+        });*/
+        </script>
+{% endblock %}

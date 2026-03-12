@@ -1,0 +1,10 @@
+.nav-img {
+    border: solid 2px ;
+    border-radius: 5px;
+}
+
+.m_container {
+    margin-top: 15px;
+    margin-left: 5px;
+    margin-right: 5px;
+}

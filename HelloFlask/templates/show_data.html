@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <h3 style="margin-top: 15px; margin-left: 5px;">Погодные данные с метеостанции {{ station.title }}</h3>
+    
+    <table class="table table-striped">
+        <tr>
+            <th scope="col">Дата и время</th>
+            <th scope="col" colspan="2">Направление</th>
+            <th scope="col" colspan="2">Скорость ветра(м/с)</th>
+            <th scope="col">Порывы(м/с)</th>
+            <th scope="col">Температура</th>
+        </tr>
+        {% for str in data %}
+            <tr>
+                <td>{{ str.timestamp }}</td>
+                <td><div style="transform:rotate({{ str.wind_direction }}deg);border:0;font-weight:bold" align="center"> ↑ </div></td>
+                <td>{{ str.wind_direction }}</td>
+                <td>min {{ str.min_wind }}</td>
+                <td>avg {{ str.average_wind }}</td> 
+                <td>{{ str.gusts }}</td>  
+                <td>{{ str.external_temperature }}°C</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+{% endblock %}
