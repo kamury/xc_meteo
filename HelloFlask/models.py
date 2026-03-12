@@ -20,10 +20,10 @@ def add_station(mac_id):
 def get_station_data(station_id):
     return query_db('SELECT * FROM station_data WHERE station_id = %s ORDER BY timestamp DESC', [station_id]);
 
-def add_station_data(station_id, params_vals):
+def add_station_data(station_id, query):
     return query_db(
         '''INSERT INTO station_data 
             (`station_id`, `timestamp`, `average_wind`, `min_wind`, `gusts`, `wind_direction`, `pressure`, `internal_temperature`, `external_temperature`, `humidity`, `precipitation`)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)''',
-        [station_id, datetime.now(), params_vals['a'], params_vals['m'], params_vals['g'], params_vals['d5'], params_vals['p'], params_vals['tp'], params_vals['te2'], params_vals['h'], 0]
+        [station_id, datetime.now(), query.average_wind, query.min_wind, query.gusts, query.wind_direction, query.p, query.tp, query.te2, query.h, query.pr]
     )
