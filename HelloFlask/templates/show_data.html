@@ -26,27 +26,28 @@
 
     <nav aria-label="Page navigation example">
         <ul class="pagination">
-            {% if page > 2 %}            
-                <li class="page-item"><a class="page-link" href="?page=1">1</a></li>
-            {% endif %}
-            {% if page > 3 %}
-                <li class="page-item disabled no-page"><a class="page-link" href="#">...</a></li>
-            {% endif %}
             {% if total_pages > 1 %}
-                {% set pages = [total_pages, page+3] %}
-                {% for p in range(1, (pages|min) + 1) %}
-                    {% if p == page %}
-                        <li class="page-item active"><a class="page-link" href="?page={{ p }}">{{ p }}</a></li>
-                    {% else %}
-                        <li class="page-item"><a class="page-link" href="?page={{ p }}">{{ p }}</a></li>
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
-            {% if total_pages > (page+4) %}
-                <li class="page-item disabled no-page"><a class="page-link" href="#">...</a></li>
-            {% endif %}
-            {% if total_pages > (page+3) %}
-                <li class="page-item"><a class="page-link" href="?page={{ total_pages }}">total_pages</a></li>
+                {% if page > 1 %}            
+                    <li class="page-item"><a class="page-link" href="?page=1">1</a></li>
+                {% endif %}
+                {% if page > 2 %}
+                    <li class="page-item disabled no-page"><a class="page-link" href="#">...</a></li>
+                {% endif %}
+                    {% set pages = [total_pages, page+3] %}
+                    {% for p in range(page, (pages|min) + 1) %}
+                        {% if p == page %}
+                            <li class="page-item active"><a class="page-link" href="?page={{ p }}">{{ p }}</a></li>
+                        {% else %}
+                            <li class="page-item"><a class="page-link" href="?page={{ p }}">{{ p }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                
+                {% if total_pages > (page+4) %}
+                    <li class="page-item disabled no-page"><a class="page-link" href="#">...</a></li>
+                {% endif %}
+                {% if total_pages > (page+3) %}
+                    <li class="page-item"><a class="page-link" href="?page={{ total_pages }}">{{ total_pages }}</a></li>
+                {% endif %}
             {% endif %}
 
         </ul>
