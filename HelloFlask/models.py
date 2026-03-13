@@ -17,8 +17,12 @@ def add_station(mac_id):
         ["", mac_id, 'test', 3, 4]
     )
 
-def get_station_data(station_id):
-    return query_db('SELECT * FROM station_data WHERE station_id = %s ORDER BY timestamp DESC', [station_id]);
+def get_station_data_per_page(station_id, page, per_page):
+    return query_db('SELECT * FROM station_data WHERE station_id = %s ORDER BY timestamp DESC LIMIT %s OFFSET %s', [station_id, per_page, (page - 1)*per_page]);
+
+def get_station_data_total_count(station_id):
+    count = query_db('SELECT COUNT(*) as cnt FROM station_data WHERE station_id = %s', [station_id], one=True);
+    return count['cnt']
 
 def add_station_data(station_id, query):
     return query_db(
