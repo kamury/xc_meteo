@@ -13,11 +13,11 @@ class QueryModel(BaseModel):
     m: float = Field(..., description="Min wind")
     g: float = Field(..., description="Gusts")
     d5: float = Field(..., description="Wind direction")
-    p: Optional[int] = Field(None, description="Давление в hPa")
-    tp: Optional[int] = Field(None, description="Температура внутреннего датчика температуры")
-    te2: Optional[int] = Field(None, description="Температура внешнего датчика температуры")
-    h: Optional[int] = Field(None, description="Влажность")
-    pr: Optional[int] = Field(None, description="Количество срабатываний датчика осадков")
+    p: Optional[float] = Field(None, description="Давление в hPa")
+    tp: Optional[float] = Field(None, description="Температура внутреннего датчика температуры")
+    te2: Optional[float] = Field(None, description="Температура внешнего датчика температуры")
+    h: Optional[float] = Field(None, description="Влажность")
+    pr: Optional[float] = Field(None, description="Количество срабатываний датчика осадков")
 
     @computed_field
     def wind_direction(self) -> float:
